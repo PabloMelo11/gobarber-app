@@ -61,7 +61,7 @@ const SignUp: React.FC = () => {
           'Voce ja pode fazer seu logon no GoBarber.',
         );
 
-        navigation.goBack();
+        navigation.navigate('SignIn');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
