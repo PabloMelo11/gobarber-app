@@ -27,6 +27,7 @@
     "react/prop-types": "off",
     "prettier/prettier": "error",
     "react-hooks/rules-of-hooks": "error",
+    "react/jsx-one-expression-per-line": "off",
     "react-hooks/exhaustive-deps": "warn",
     "@typescript-eslint/camelcase": "off",
     "@typescript-eslint/class-name-casing": "off",
