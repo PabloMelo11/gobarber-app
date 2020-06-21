@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import {
   Image,
   View,
@@ -31,6 +31,8 @@ interface SignUpFormData {
 }
 
 const SignUp: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
 
@@ -40,6 +42,8 @@ const SignUp: React.FC = () => {
   const handleSignUp = useCallback(
     async (data: SignUpFormData) => {
       try {
+        setLoading(true);
+
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
@@ -72,6 +76,8 @@ const SignUp: React.FC = () => {
         }
 
         Alert.alert('Erro no cadastro', `${err.response.data.message}`);
+      } finally {
+        setLoading(false);
       }
     },
     [navigation],
@@ -135,6 +141,7 @@ const SignUp: React.FC = () => {
               />
 
               <Button
+                loading={loading}
                 onPress={() => {
                   formRef.current?.submitForm();
                 }}
