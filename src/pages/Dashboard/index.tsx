@@ -3,7 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 
 import { useNavigation } from '@react-navigation/native';
+import { Alert } from 'react-native';
 import { useAuth } from '../../hooks/auth';
+
+import Loading from '../../components/Loading';
 
 import api from '../../services/api';
 
@@ -31,15 +34,27 @@ export interface Provider {
 }
 
 const Dashboard: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const [providers, setProviders] = useState<Provider[]>([]);
 
   const { user } = useAuth();
   const { navigate } = useNavigation();
 
   useEffect(() => {
-    api.get('providers').then(response => {
-      setProviders(response.data);
-    });
+    try {
+      setLoading(true);
+
+      api.get('providers').then(response => {
+        setProviders(response.data);
+      });
+    } catch {
+      Alert.alert(
+        'Erro ao carregar os prestadores!',
+        'Ocorreu um erro ao tentar listar os pretadores, tente novamente.',
+      );
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const navigateToProfile = useCallback(() => {
@@ -66,34 +81,38 @@ const Dashboard: React.FC = () => {
         </ProfileButton>
       </Header>
 
-      <ProviderList
-        keyExtractor={provider => provider.id}
-        data={providers}
-        ListHeaderComponent={
-          <ProvidersListTitle>Cabeleireiros</ProvidersListTitle>
-        }
-        renderItem={({ item: provider }) => (
-          <ProviderContainer
-            onPress={() => navigateToCreateAppointment(provider.id)}
-          >
-            <ProviderAvatar source={{ uri: provider.avatar_url }} />
+      {loading && <Loading />}
 
-            <ProviderInfo>
-              <ProviderName>{provider.name}</ProviderName>
+      {!loading && (
+        <ProviderList
+          keyExtractor={provider => provider.id}
+          data={providers}
+          ListHeaderComponent={
+            <ProvidersListTitle>Cabeleireiros</ProvidersListTitle>
+          }
+          renderItem={({ item: provider }) => (
+            <ProviderContainer
+              onPress={() => navigateToCreateAppointment(provider.id)}
+            >
+              <ProviderAvatar source={{ uri: provider.avatar_url }} />
 
-              <ProviderMeta>
-                <Icon name="calendar" size={14} color="#ff9000" />
-                <ProviderMetaText>Segunda a sexta</ProviderMetaText>
-              </ProviderMeta>
+              <ProviderInfo>
+                <ProviderName>{provider.name}</ProviderName>
 
-              <ProviderMeta>
-                <Icon name="clock" size={14} color="#ff9000" />
-                <ProviderMetaText>8h as 18h</ProviderMetaText>
-              </ProviderMeta>
-            </ProviderInfo>
-          </ProviderContainer>
-        )}
-      />
+                <ProviderMeta>
+                  <Icon name="calendar" size={14} color="#ff9000" />
+                  <ProviderMetaText>Segunda a sexta</ProviderMetaText>
+                </ProviderMeta>
+
+                <ProviderMeta>
+                  <Icon name="clock" size={14} color="#ff9000" />
+                  <ProviderMetaText>8h as 18h</ProviderMetaText>
+                </ProviderMeta>
+              </ProviderInfo>
+            </ProviderContainer>
+          )}
+        />
+      )}
     </Container>
   );
 };

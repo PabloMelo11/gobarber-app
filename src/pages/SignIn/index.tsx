@@ -48,10 +48,14 @@ const SignIn: React.FC = () => {
 
   const { signIn } = useAuth();
 
+  const handleLoading = useCallback(() => {
+    setLoading(oldState => !oldState);
+  }, []);
+
   const handleSignIn = useCallback(
     async (data: SignInFormData) => {
       try {
-        setLoading(true);
+        handleLoading();
 
         formRef.current?.setErrors({});
 
@@ -82,10 +86,10 @@ const SignIn: React.FC = () => {
           'Ocorreu um erro ao fazer login, cheque as credenciais.',
         );
       } finally {
-        setLoading(false);
+        handleLoading();
       }
     },
-    [signIn],
+    [signIn, handleLoading],
   );
 
   return (

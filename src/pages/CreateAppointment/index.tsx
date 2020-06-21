@@ -5,6 +5,8 @@ import { Platform, Alert } from 'react-native';
 import { format } from 'date-fns';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import Loading from '../../components/Loading';
+
 import api from '../../services/api';
 
 import {
@@ -56,6 +58,7 @@ const CreateAppointment: React.FC = () => {
 
   const routeParams = route.params as RouteParams;
 
+  const [loading, setLoading] = useState(false);
   const [availability, setAvailability] = useState<AvailabilityItem[]>([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -72,17 +75,28 @@ const CreateAppointment: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    api
-      .get(`providers/${selectedProvider}/day-availability`, {
-        params: {
-          year: selectedDate.getFullYear(),
-          month: selectedDate.getMonth() + 1,
-          day: selectedDate.getDate(),
-        },
-      })
-      .then(response => {
-        setAvailability(response.data);
-      });
+    try {
+      setLoading(true);
+
+      api
+        .get(`providers/${selectedProvider}/day-availability`, {
+          params: {
+            year: selectedDate.getFullYear(),
+            month: selectedDate.getMonth() + 1,
+            day: selectedDate.getDate(),
+          },
+        })
+        .then(response => {
+          setAvailability(response.data);
+        });
+    } catch {
+      Alert.alert(
+        'Erro ao exibir horarios!',
+        'Ocorreu um erro ao exibir os horarios, tente novamente.',
+      );
+    } finally {
+      setLoading(false);
+    }
   }, [selectedDate, selectedProvider]);
 
   const navigateBack = useCallback(() => {
@@ -113,6 +127,8 @@ const CreateAppointment: React.FC = () => {
 
   const handleCreateAppointment = useCallback(async () => {
     try {
+      setLoading(true);
+
       const date = new Date(selectedDate);
 
       date.setHours(selectedHour);
@@ -129,6 +145,8 @@ const CreateAppointment: React.FC = () => {
         'Erro ao criar agendamento',
         'Ocorreu ao tentar criar o agendamento, tente novamente',
       );
+    } finally {
+      setLoading(false);
     }
   }, [navigate, selectedDate, selectedHour, selectedProvider]);
 
@@ -256,7 +274,11 @@ const CreateAppointment: React.FC = () => {
         </Schedule>
 
         <CreateAppointmentButton onPress={handleCreateAppointment}>
-          <CreateAppointmentButtonText>Agendar</CreateAppointmentButtonText>
+          {loading ? (
+            <Loading />
+          ) : (
+            <CreateAppointmentButtonText>Agendar</CreateAppointmentButtonText>
+          )}
         </CreateAppointmentButton>
       </Content>
     </Container>

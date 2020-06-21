@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import {
   View,
@@ -40,6 +40,8 @@ interface ProfileFormData {
 }
 
 const SignUp: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+
   const { user, updateUser, signOut } = useAuth();
 
   const formRef = useRef<FormHandles>(null);
@@ -53,6 +55,8 @@ const SignUp: React.FC = () => {
   const handleProfile = useCallback(
     async (data: ProfileFormData) => {
       try {
+        setLoading(true);
+
         formRef.current?.setErrors({});
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
@@ -114,6 +118,8 @@ const SignUp: React.FC = () => {
           'Erro na atualização do perfil',
           'Ocorreu um erro ao atualizar seu perfil, tente novamente',
         );
+      } finally {
+        setLoading(false);
       }
     },
     [navigation, updateUser],
@@ -249,7 +255,10 @@ const SignUp: React.FC = () => {
                 onSubmitEditing={() => formRef.current?.submitForm()}
               />
 
-              <Button onPress={() => formRef.current?.submitForm()}>
+              <Button
+                loading={loading}
+                onPress={() => formRef.current?.submitForm()}
+              >
                 Confirmar mudanças
               </Button>
             </Form>
