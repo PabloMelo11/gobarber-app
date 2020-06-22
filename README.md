@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">
-    <img alt="App-GoBarber" title="App-GoBarber" src=".github/app.gif" />
+    <img alt="App-GoBarber" title="App-GoBarber" src=".github/app_gobarber.gif" />
 </h1>
 
 ## 🚀 About application
