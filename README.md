@@ -8,7 +8,7 @@
 
 ## 🚀 About application
 
-- This application will be the front end of a restaurant website, allowing you to register, remove and edit dishes, as well as indicate their availability.
+- This application is the Gobarber app for scheduling services.
 - The application was made using React Native, Typescript, and lib axios to connect to api.
 
 ## 🔥️ Technologies used
