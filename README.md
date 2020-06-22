@@ -2,6 +2,10 @@
 <img src="https://ik.imagekit.io/rmpz8b4ytr/logo_gostack_xOQ3emgGa.png"/>
 </p>
 
+<h1 align="center">
+    <img alt="App-GoBarber" title="App-GoBarber" src=".github/app.gif" />
+</h1>
+
 ## 🚀 About application
 
 - This application will be the front end of a restaurant website, allowing you to register, remove and edit dishes, as well as indicate their availability.
@@ -40,4 +44,4 @@ The project was developed using the following technologies:
 
 ---
 
-Criado com ❤️ por Pablo Melo
+Created with ❤️ by Pablo Melo
